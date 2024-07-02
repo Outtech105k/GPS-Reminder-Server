@@ -1,0 +1,9 @@
+services:
+  web:
+    image: golang:1.21.6
+    ports:
+      - 8080:80
+    volumes:
+      - ./web/:/app
+    working_dir: /app
+    command: bash -c "go run ."
