@@ -7,8 +7,8 @@ import (
 )
 
 func SetHandler(router *gin.Engine) {
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
+	router.GET("/ping", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
 			"status":  "OK",
 			"message": "pong",
 		})
