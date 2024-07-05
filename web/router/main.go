@@ -1,12 +1,13 @@
-package handler
+package router
 
 import (
 	"net/http"
 
+	"github.com/Outtech105k/GPS-Reminder-Server/web/handler"
 	"github.com/gin-gonic/gin"
 )
 
-func SetHandler(router *gin.Engine) {
+func SetRoutes(router *gin.Engine) {
 	router.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status":  "OK",
@@ -19,4 +20,6 @@ func SetHandler(router *gin.Engine) {
 			"status": "Not Found",
 		})
 	})
+
+	router.POST("/login", handler.Login)
 }

@@ -9,17 +9,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Outtech105k/GPS-Reminder-Server/web/handler"
+	"github.com/Outtech105k/GPS-Reminder-Server/web/router"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := gin.Default()
-	handler.SetHandler(router)
+	handler := gin.Default()
+	router.SetRoutes(handler)
 
 	srv := &http.Server{
 		Addr:    ":80",
-		Handler: router,
+		Handler: handler,
 	}
 
 	go func() {
