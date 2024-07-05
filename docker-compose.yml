@@ -7,3 +7,20 @@ services:
       - ./web/:/app
     working_dir: /app
     command: bash -c "go run ."
+
+  db:
+    image: mysql:9.0
+    ports:
+      - 3306:3306
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./logs:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOTPASS}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+    restart: always
+
+volumes:
+  db-store:
