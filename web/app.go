@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,11 +10,22 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Outtech105k/GPS-Reminder-Server/web/db"
 	"github.com/Outtech105k/GPS-Reminder-Server/web/router"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	fmt.Println("--- Server starting ---")
+
+	// DB接続確立
+	db, err := db.Connect()
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer db.Close()
+
+	// Ginサーバセットアップ
 	handler := gin.Default()
 	router.SetRoutes(handler)
 
@@ -22,6 +34,7 @@ func main() {
 		Handler: handler,
 	}
 
+	// サーバ起動
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Panicf("listen: %s\n", err)
@@ -39,5 +52,5 @@ func main() {
 		log.Panic("Server forced to shutdown:", err)
 	}
 
-	log.Println("Server exiting")
+	fmt.Println("--- Server exiting ---")
 }
