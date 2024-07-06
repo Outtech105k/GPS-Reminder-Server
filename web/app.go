@@ -21,13 +21,13 @@ func main() {
 	// DB接続確立
 	db, err := db.Connect()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("DB: %v\n", err)
 	}
 	defer db.Close()
 
 	// Ginサーバセットアップ
 	handler := gin.Default()
-	router.SetRoutes(handler)
+	router.SetRoutes(handler, db)
 
 	srv := &http.Server{
 		Addr:    ":80",

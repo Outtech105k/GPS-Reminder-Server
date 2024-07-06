@@ -1,18 +1,20 @@
 package router
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/Outtech105k/GPS-Reminder-Server/web/handler"
 	"github.com/gin-gonic/gin"
 )
 
-func SetRoutes(router *gin.Engine) {
-	router.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status":  "OK",
-			"message": "pong",
-		})
+func SetRoutes(router *gin.Engine, db *sql.DB) {
+	router.POST("/signup", func(ctx *gin.Context) {
+		handler.Signup(ctx, db)
+	})
+
+	router.POST("/signin", func(ctx *gin.Context) {
+		handler.Signin(ctx, db)
 	})
 
 	router.NoRoute(func(ctx *gin.Context) {
@@ -20,6 +22,4 @@ func SetRoutes(router *gin.Engine) {
 			"status": "Not Found",
 		})
 	})
-
-	router.POST("/login", handler.Login)
 }

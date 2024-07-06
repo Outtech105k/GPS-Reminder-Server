@@ -2,16 +2,19 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/tanimutomo/sqlfile"
 )
 
 func Connect() (*sql.DB, error) {
+	// データベース接続
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("timeset: %w", err)
 	}
 
 	conn := mysql.Config{
@@ -27,7 +30,21 @@ func Connect() (*sql.DB, error) {
 
 	db, err := sql.Open("mysql", conn.FormatDSN())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("dbConnection: %w", err)
+	}
+
+	// テーブル構成初期化
+	s := sqlfile.New()
+
+	err = s.File("db/init.sql")
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("readInitDbFile: %w", err)
+	}
+	_, err = s.Exec(db)
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("execInitDbFile: %w", err)
 	}
 
 	return db, nil
