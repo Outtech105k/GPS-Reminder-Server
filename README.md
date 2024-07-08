@@ -17,18 +17,6 @@ Reminder application (SERVER SIDE) related GPS location.
 docker compose up -d
 ```
 
-`.env`ファイルの変数内容は以下の通りです。
-
-| Key name | Description |
-| --- | --- |
-| `BCRYPT_COST` | パスワードのハッシュ化に使う[BCrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt)のストレッチング回数を指定します。 |
-| `APP_PORT` | サーバのポート番号(クライアントに開放するポート) |
-| `MYSQL_ROOTPASS` | MySQLへのrootのログインパス
-| `MYSQL_DB` | アプリ内で使用するDB名 |
-| `MYSQL_USER` | MySQLへの一般ユーザ名(アプリからのアクセスに使用) |
-| `MYSQL_PASS` | MySQLへの一般ユーザのパス |
-| `MYSQL_PORT` | MySQLへの接続ポート(アプリからはDockerネットワークを使用するので、変更可) |
-
 ## Usage
 
 APIアクセスのエンドポイントは以下の通りです。
