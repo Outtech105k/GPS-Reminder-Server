@@ -6,13 +6,15 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/Outtech105k/GPS-Reminder-Server/web/auth"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Signup(ctx *gin.Context, db *sql.DB) {
-	var input AccountRequestForm
+	var input auth.AccountRequest
 
+	// リクエスト不備チェック
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return

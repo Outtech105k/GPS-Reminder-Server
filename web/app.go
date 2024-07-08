@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Outtech105k/GPS-Reminder-Server/web/auth"
 	"github.com/Outtech105k/GPS-Reminder-Server/web/db"
 	"github.com/Outtech105k/GPS-Reminder-Server/web/router"
 	"github.com/gin-gonic/gin"
@@ -25,9 +26,15 @@ func main() {
 	}
 	defer db.Close()
 
+	// JWT認証設定
+	jwtMiddleWare, err := auth.NewJWTMiddleware(db)
+	if err != nil {
+		fmt.Printf("JWT: %v\n", err)
+	}
+
 	// Ginサーバセットアップ
 	handler := gin.Default()
-	router.SetRoutes(handler, db)
+	router.SetRoutes(handler, db, jwtMiddleWare)
 
 	srv := &http.Server{
 		Addr:    ":80",
