@@ -1,0 +1,14 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "位置情報と連携したリマインダーアプリに使用するAPIです",
+        "title": "GPS Reminder API",
+        "contact": {},
+        "license": {
+            "name": "MIT License",
+            "url": "https://opensource.org/license/mit"
+        },
+        "version": "Beta"
+    },
+    "paths": {}
+}
