@@ -16,6 +16,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @title           GPS Reminder API
+// @version         Beta
+// @description     位置情報と連携したリマインダーアプリに使用するAPIです
+
+// @license.name  MIT License
+// @license.url   https://opensource.org/license/mit
 func main() {
 	fmt.Println("--- Server starting ---")
 
