@@ -12,20 +12,20 @@ import (
 
 func SetRoutes(router *gin.Engine, db *sql.DB, jwtMiddleware *jwt.GinJWTMiddleware) {
 	// ユーザ登録
-	router.POST("/signup", func(ctx *gin.Context) {
-		handler.Signup(ctx, db)
+	router.POST("/users", func(ctx *gin.Context) {
+		handler.PostUsers(ctx, db)
 	})
 
 	// アカウント名・パスワードを入力してトークン取得
-	router.POST("/signin", jwtMiddleware.LoginHandler)
-	router.GET("/reflesh-token", jwtMiddleware.RefreshHandler)
+	router.POST("/auth/token", jwtMiddleware.LoginHandler)
+	router.GET("/auth/token/reflesh", jwtMiddleware.RefreshHandler)
 
 	// トークン認証
-	authGroup := router.Group("/auth")
+	authGroup := router.Group("/reminders")
 	authGroup.Use(jwtMiddleware.MiddlewareFunc())
 	authGroup.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
-			"message":  "You are authorized",
+			"message":  "Reminders",
 			"username": auth.GetUsernameInJWT(ctx),
 		})
 	})
