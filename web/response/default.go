@@ -1,4 +1,4 @@
-package responses
+package response
 
 type SuccessDefaultResponse struct {
 	Message string `json:"message"`

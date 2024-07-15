@@ -7,7 +7,7 @@ import (
 	"regexp"
 
 	"github.com/Outtech105k/GPS-Reminder-Server/web/auth"
-	"github.com/Outtech105k/GPS-Reminder-Server/web/responses"
+	"github.com/Outtech105k/GPS-Reminder-Server/web/response"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,7 +17,7 @@ func PostUsers(ctx *gin.Context, db *sql.DB) {
 
 	// リクエスト不備チェック
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, responses.ErrorDefaultResponse{
+		ctx.JSON(http.StatusBadRequest, response.ErrorDefaultResponse{
 			Error: "Invalid request payload",
 		})
 		return
@@ -25,7 +25,7 @@ func PostUsers(ctx *gin.Context, db *sql.DB) {
 
 	// ユーザー名バリデーション
 	if isInvalidUsername(input.Username) {
-		ctx.JSON(http.StatusBadRequest, responses.ErrorDefaultResponse{
+		ctx.JSON(http.StatusBadRequest, response.ErrorDefaultResponse{
 			Error: "Username did not satisfy the requirements",
 		})
 		return
@@ -33,7 +33,7 @@ func PostUsers(ctx *gin.Context, db *sql.DB) {
 
 	// パスワードバリデーション
 	if !isValidPassword(input.Password) {
-		ctx.JSON(http.StatusBadRequest, responses.ErrorDefaultResponse{
+		ctx.JSON(http.StatusBadRequest, response.ErrorDefaultResponse{
 			Error: "Password did not satisfy the requirements",
 		})
 		return
@@ -46,11 +46,11 @@ func PostUsers(ctx *gin.Context, db *sql.DB) {
 	// err == sql.ErrNoRows の時、レコードが存在しないので、正常   (続行)
 	// それ以外の時、Queryエラー                                   (離脱)
 	if err == nil {
-		ctx.JSON(http.StatusConflict, responses.ErrorDefaultResponse{Error: "Username already exists"})
+		ctx.JSON(http.StatusConflict, response.ErrorDefaultResponse{Error: "Username already exists"})
 		return
 	} else if err != sql.ErrNoRows {
 		fmt.Printf("usernameConflictQuery: %v\n", err)
-		ctx.JSON(http.StatusInternalServerError, responses.ErrorDefaultResponse{Error: "Database error"})
+		ctx.JSON(http.StatusInternalServerError, response.ErrorDefaultResponse{Error: "Database error"})
 		return
 	}
 
@@ -58,7 +58,7 @@ func PostUsers(ctx *gin.Context, db *sql.DB) {
 	hashBytes, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		fmt.Printf("generatePassword: %v\n", err)
-		ctx.JSON(http.StatusInternalServerError, responses.ErrorDefaultResponse{
+		ctx.JSON(http.StatusInternalServerError, response.ErrorDefaultResponse{
 			Error: "User resist error",
 		})
 		return
@@ -68,13 +68,13 @@ func PostUsers(ctx *gin.Context, db *sql.DB) {
 	_, err = db.Exec("INSERT INTO users(name, hashed_pass) VALUES(?, ?)", input.Username, string(hashBytes))
 	if err != nil {
 		fmt.Printf("registerUser: %v\n", err)
-		ctx.JSON(http.StatusInternalServerError, responses.ErrorDefaultResponse{
+		ctx.JSON(http.StatusInternalServerError, response.ErrorDefaultResponse{
 			Error: "User resist error",
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, responses.SuccessDefaultResponse{
+	ctx.JSON(http.StatusOK, response.SuccessDefaultResponse{
 		Message: "User registerd successfully",
 	})
 }
