@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	_ "github.com/Outtech105k/GPS-Reminder-Server/web/response"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"

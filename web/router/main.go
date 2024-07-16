@@ -12,28 +12,36 @@ import (
 
 func SetRoutes(router *gin.Engine, db *sql.DB, jwtMiddleware *jwt.GinJWTMiddleware) {
 	// ユーザ登録
-	router.POST("/signup", func(ctx *gin.Context) {
-		handler.Signup(ctx, db)
+	router.POST("/users", func(ctx *gin.Context) {
+		handler.PostUsers(ctx, db)
 	})
+
+	setRemindersGroup(router, db, jwtMiddleware)
 
 	// アカウント名・パスワードを入力してトークン取得
-	router.POST("/signin", jwtMiddleware.LoginHandler)
-	router.GET("/reflesh-token", jwtMiddleware.RefreshHandler)
-
-	// トークン認証
-	authGroup := router.Group("/auth")
-	authGroup.Use(jwtMiddleware.MiddlewareFunc())
-	authGroup.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message":  "You are authorized",
-			"username": auth.GetUsernameInJWT(ctx),
-		})
-	})
+	router.POST("/auth/token", jwtMiddleware.LoginHandler)
+	router.GET("/auth/token/reflesh", jwtMiddleware.RefreshHandler)
 
 	// 404レスポンス
 	router.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"error": "Not Found",
 		})
+	})
+}
+
+func setRemindersGroup(router *gin.Engine, db *sql.DB, jwtMiddleware *jwt.GinJWTMiddleware) {
+	group := router.Group("/reminders")
+	group.Use(jwtMiddleware.MiddlewareFunc())
+
+	group.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"message":  "Reminders",
+			"username": auth.GetUsernameInJWT(ctx),
+		})
+	})
+
+	group.POST("/", func(ctx *gin.Context) {
+		handler.PostRemind(ctx, db)
 	})
 }
